@@ -5,55 +5,55 @@ import java.util.Date;
 
 //评论实体
 public class ItripComment implements Serializable{
-    private long id;//主键
-    private long hotelId;//酒店id
-    private long productId;//商品id
-    private long orderId;//订单id
+    private Long id;//主键
+    private Long hotelId;//酒店id
+    private Long productId;//商品id
+    private Long orderId;//订单id
     private Integer productType;//商品类型(0:旅游产品 1:酒店产品 2:机票产品)
     private String content;//评论内容
-    private long userId;//评论用户编号
+    private Long userId;//评论用户编号
     private Integer isHavingImg;//是否包含图片(当用户上传评论时检测)0:无图片 1:有图片
     private Integer positionScore;//位置评分
     private Integer facilitiesScore;//特色评分
     private Integer serviceScore;//服务评分
     private Integer hygieneScore;//卫生评分
     private Integer score;//综合评分
-    private long tripMode;//出游类型
+    private Long tripMode;//出游类型
     private Integer isOk;//是否满意（0：有待改善 1：值得推荐）
     private Date creationDate;//创建时间
     private Long createdBy;//创建人
     private Date modifyDate;//修改时间
     private Long modifiedBy;//修改人
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getHotelId() {
+    public Long getHotelId() {
         return hotelId;
     }
 
-    public void setHotelId(long hotelId) {
+    public void setHotelId(Long hotelId) {
         this.hotelId = hotelId;
     }
 
-    public long getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(long productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 
-    public long getOrderId() {
+    public Long getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(long orderId) {
+    public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
 
@@ -73,11 +73,11 @@ public class ItripComment implements Serializable{
         this.content = content;
     }
 
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -129,11 +129,11 @@ public class ItripComment implements Serializable{
         this.score = score;
     }
 
-    public long getTripMode() {
+    public Long getTripMode() {
         return tripMode;
     }
 
-    public void setTripMode(long tripMode) {
+    public void setTripMode(Long tripMode) {
         this.tripMode = tripMode;
     }
 

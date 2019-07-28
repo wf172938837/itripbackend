@@ -5,10 +5,10 @@ import java.util.Date;
 
 //区域字典表
 public class ItripAreaDic implements Serializable {
-    private long id;//主键
+    private Long id;//主键
     private String name;//区域名称
     private String areaNO;//区域编号
-    private long parent;//父级区域ID
+    private Long parent;//父级区域ID
     private Integer isActivated;//是否激活0激活，1未激活
     private Integer isTradingArea;//是否是商圈 0：不是 1：是
     private Integer isHot;//是否是热门城市 0：不是 1：是
@@ -20,11 +20,11 @@ public class ItripAreaDic implements Serializable {
     private Date modifyDate;//修改时间
     private Long modifiedBy;//修改人
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -44,11 +44,11 @@ public class ItripAreaDic implements Serializable {
         this.areaNO = areaNO;
     }
 
-    public long getParent() {
+    public Long getParent() {
         return parent;
     }
 
-    public void setParent(long parent) {
+    public void setParent(Long parent) {
         this.parent = parent;
     }
 
