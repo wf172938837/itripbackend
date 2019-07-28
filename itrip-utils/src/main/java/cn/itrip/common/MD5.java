@@ -3,7 +3,7 @@ package cn.itrip.common;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
-
+//MD5加密
 public class MD5 {
 
 	public static String getMd5(String plainText,int length) {

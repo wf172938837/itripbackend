@@ -1,6 +1,6 @@
 package cn.itrip.common;
 
-import cn.itrip.beans.dto.Dto;
+import cn.itrip.dto.Dto;
 
 /**
  * 用于返回Dto的工具类
