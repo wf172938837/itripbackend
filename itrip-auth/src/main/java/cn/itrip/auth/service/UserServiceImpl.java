@@ -15,8 +15,7 @@ public class UserServiceImpl implements UserService {
      * param: 前台传来的用户名 密码
      * return:返回用户实体
      */
-    public ItripUser login(Map<String, Object> param) {
-
+    public ItripUser login(Map<String,Object> param) {
         try {
             List<ItripUser> user=ium.getItripUserListByMap(param);
             if(user.size()>0 && user!=null){
