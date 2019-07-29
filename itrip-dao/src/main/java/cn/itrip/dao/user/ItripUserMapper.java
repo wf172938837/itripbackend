@@ -1,6 +1,8 @@
 package cn.itrip.dao.user;
-import cn.itrip.beans.pojo.ItripUser;
+
+import cn.itrip.pojo.ItripUser;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 import java.util.Map;
 
