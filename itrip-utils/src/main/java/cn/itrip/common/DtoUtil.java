@@ -52,7 +52,7 @@ public class DtoUtil {
         dto.setData(data);
         return  dto;
     }
-
+    //返回失败
     public static Dto returnFail(String message,String errorCode){
         Dto dto=new Dto();
         dto.setSuccess(fail);
