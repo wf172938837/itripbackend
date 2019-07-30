@@ -65,6 +65,18 @@ public class LoginController {
         }
 
     }
+    //注销业务
+    @RequestMapping(value = "/logout",method = RequestMethod.GET,headers = "token")
+    @ResponseBody
+    public Dto cancellation(HttpServletRequest request){
 
+        String token=request.getHeader("token");
+
+        if(tokenService.validate(request.getHeader("User-Agent"),token)){
+            return DtoUtil.returnFail("Token无效",ErrorCode.AUTH_TOKEN_INVALID);
+        }
+        tokenService.delete(token);
+        return DtoUtil.returnSuccess("注销成功");
+    }
 
 }
