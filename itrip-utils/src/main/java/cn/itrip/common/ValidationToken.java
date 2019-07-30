@@ -1,6 +1,6 @@
 package cn.itrip.common;
 
-import cn.itrip.pojo.ItripUser;
+import cn.itrip.beans.pojo.ItripUser;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.log4j.Logger;
 

@@ -1,8 +1,9 @@
 package cn.itrip.dao.comment;
 import cn.itrip.beans.pojo.ItripComment;
-import cn.itrip.beans.vo.comment.ItripScoreCommentVO;
 import cn.itrip.beans.vo.comment.ItripListCommentVO;
+import cn.itrip.beans.vo.comment.ItripScoreCommentVO;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 import java.util.Map;
 

@@ -1,6 +1,6 @@
 package cn.itrip.dao.user;
 
-import cn.itrip.pojo.ItripUser;
+import cn.itrip.beans.pojo.ItripUser;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -20,4 +20,5 @@ public interface ItripUserMapper {
 
 	public Integer deleteItripUserById(@Param(value = "id") Long id)throws Exception;
 
+	public ItripUser getByMap(Map<String, Object> param);
 }

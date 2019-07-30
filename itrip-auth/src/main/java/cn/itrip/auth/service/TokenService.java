@@ -2,7 +2,7 @@ package cn.itrip.auth.service;
 
 
 import cn.itrip.auth.exception.TokenValidationFailedException;
-import cn.itrip.pojo.ItripUser;
+import cn.itrip.beans.pojo.ItripUser;
 
 /**
  * Token管理接口

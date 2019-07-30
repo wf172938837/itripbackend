@@ -2,6 +2,7 @@ package cn.itrip.dao.hoteltempstore;
 import cn.itrip.beans.pojo.ItripHotelTempStore;
 import cn.itrip.beans.vo.store.StoreVO;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 import java.util.Map;
 

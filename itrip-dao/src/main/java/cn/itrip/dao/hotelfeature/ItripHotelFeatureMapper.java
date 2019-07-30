@@ -1,6 +1,7 @@
 package cn.itrip.dao.hotelfeature;
 import cn.itrip.beans.pojo.ItripHotelFeature;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 import java.util.Map;
 

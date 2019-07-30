@@ -4,7 +4,7 @@ import cn.itrip.auth.exception.TokenValidationFailedException;
 import cn.itrip.common.MD5;
 import cn.itrip.common.RedisAPI;
 import cn.itrip.common.UserAgentUtil;
-import cn.itrip.pojo.ItripUser;
+import cn.itrip.beans.pojo.ItripUser;
 import com.alibaba.fastjson.JSON;
 import cz.mallat.uasparser.UserAgentInfo;
 import org.apache.log4j.Logger;

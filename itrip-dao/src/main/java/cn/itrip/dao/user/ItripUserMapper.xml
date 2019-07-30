@@ -97,6 +97,30 @@
         </if>
     </select>
 
+    <select id="getByMap" parameterType="java.util.Map" resultType="cn.itrip.beans.pojo.ItripUser">
+        Select
+                id as id,
+                userCode as userCode,
+                userPassword as userPassword,
+                userType as userType,
+                flatID as flatID,
+                userName as userName,
+                weChat as weChat,
+                QQ as QQ,
+                weibo as weibo,
+                baidu as baidu,
+                activated as activated,
+                creationDate as creationDate,
+                createdBy as createdBy,
+                modifyDate as modifyDate,
+                modifiedBy as modifiedBy
+
+            from itrip_user
+            where userCode =#{userCode}
+            and userPassword =#{userPassword}
+    </select>
+
+
     <select id="getItripUserCountByMap" resultType="Integer"  parameterType="java.util.Map">
         select count(*) from itrip_user
         <trim prefix="where" prefixOverrides="and | or">

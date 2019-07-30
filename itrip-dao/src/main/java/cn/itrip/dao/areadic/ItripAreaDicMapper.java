@@ -1,6 +1,6 @@
 package cn.itrip.dao.areadic;
 
-import cn.itrip.pojo.ItripAreaDic;
+import cn.itrip.beans.pojo.ItripAreaDic;
 
 import java.util.List;
 

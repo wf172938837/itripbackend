@@ -2,8 +2,10 @@ package cn.itrip.dao.hotel;
 import cn.itrip.beans.pojo.ItripAreaDic;
 import cn.itrip.beans.pojo.ItripHotel;
 import cn.itrip.beans.pojo.ItripLabelDic;
-import cn.itrip.beans.vo.hotel.*;
+import cn.itrip.beans.vo.hotel.ItripSearchFacilitiesHotelVO;
+import cn.itrip.beans.vo.hotel.ItripSearchPolicyHotelVO;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 import java.util.Map;
 

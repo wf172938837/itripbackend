@@ -1,6 +1,7 @@
 package cn.itrip.dao.tradeends;
 import cn.itrip.beans.pojo.ItripTradeEnds;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 import java.util.Map;
 
