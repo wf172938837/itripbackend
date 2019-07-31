@@ -8,6 +8,7 @@ import redis.clients.jedis.JedisPool;
  * @author bdqn_hl
  * @date 2014-3-15
  */
+//redis数据库连接开发工具
 public class RedisAPI {
 	
 	public JedisPool jedisPool;
