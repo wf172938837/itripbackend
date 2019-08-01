@@ -23,7 +23,7 @@ public class UserController {
     private UserService userService;
 
     //邮箱用户注册
-    @RequestMapping(value = "/insertUserMail",method = RequestMethod.POST,produces = "application/json")
+    @RequestMapping(value = "/doregister",method = RequestMethod.POST,produces = "application/json")
     @ResponseBody
     public Dto insertUserMail(@RequestBody ItripUserVO itripUserVO)  {
         if (!validEmail(itripUserVO.getUserCode())){
@@ -36,6 +36,7 @@ public class UserController {
         try {
             if(userService.findByName(itripUser.getUserCode())==null){
                 itripUser.setUserPassword(MD5.getMd5(itripUser.getUserPassword(),32));
+                userService.itriptxCreateUser(itripUser);
                 return DtoUtil.returnSuccess();
             }else{
                 return DtoUtil.returnFail("用户名已存在",ErrorCode.AUTH_USER_ALREADY_EXISTS);

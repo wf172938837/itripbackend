@@ -1,10 +1,12 @@
 package cn.itrip.auth.service;
 
 import cn.itrip.beans.pojo.ItripUser;
+import cn.itrip.common.MD5;
 import cn.itrip.dao.user.ItripUserMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,8 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
     @Resource
     private ItripUserMapper ium;
+    @Resource
+    private MailService mailService;
     @Override
     /**
      * param: 前台传来的用户名 密码
@@ -29,16 +33,14 @@ public class UserServiceImpl implements UserService {
     /**
      *注册
      * @param: user对象
-     * @return: 成功true 失败false
      * @throws Exception
      */
     @Override
-    public boolean insertUser(ItripUser itripUser) throws Exception {
-       Integer rows=ium.insertItripUser(itripUser);
-        if(rows>0){
-            return true;
-        }
-       return false;
+    public void itriptxCreateUser(ItripUser itripUser) throws Exception {
+        //
+        String activationCode= MD5.getMd5(new Date().toLocaleString(),32);
+        mailService.sendActivationMail(itripUser.getUserCode(),activationCode);
+        ium.insertItripUser(itripUser);
     }
 
     /**

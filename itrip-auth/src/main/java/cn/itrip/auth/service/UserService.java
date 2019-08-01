@@ -10,7 +10,7 @@ public interface UserService {
     public ItripUser login(Map<String,Object> param) throws Exception;
 
     //注册
-    public boolean insertUser(ItripUser itripUser) throws Exception;
+    public void itriptxCreateUser(ItripUser itripUser) throws Exception;
 
     //通过用户名查找用户
     public ItripUser findByName(String name) throws Exception;
