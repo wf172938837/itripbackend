@@ -14,4 +14,6 @@ public interface UserService {
 
     //通过用户名查找用户
     public ItripUser findByName(String name) throws Exception;
+    //查询该用户是否激活
+    public boolean activate(String userCode,String code) throws Exception;
 }

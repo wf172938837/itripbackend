@@ -21,4 +21,5 @@ public interface ItripUserMapper {
 	public Integer deleteItripUserById(@Param(value = "id") Long id)throws Exception;
 
 	public ItripUser getByMap(Map<String, Object> param);
+
 }

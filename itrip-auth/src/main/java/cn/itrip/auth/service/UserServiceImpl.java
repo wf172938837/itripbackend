@@ -1,7 +1,9 @@
 package cn.itrip.auth.service;
 
+import cn.itrip.auth.exception.UserLoginFailedException;
 import cn.itrip.beans.pojo.ItripUser;
 import cn.itrip.common.MD5;
+import cn.itrip.common.RedisAPI;
 import cn.itrip.dao.user.ItripUserMapper;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ public class UserServiceImpl implements UserService {
     private ItripUserMapper ium;
     @Resource
     private MailService mailService;
+    @Resource
+    private RedisAPI redisAPI;
     @Override
     /**
      * param: 前台传来的用户名 密码
@@ -25,6 +29,9 @@ public class UserServiceImpl implements UserService {
 
             List<ItripUser> user=ium.getItripUserListByMap(param);
             if(user !=null && user.size()>0){
+                if(user.get(0).getActivated()!=-1){
+                    throw new UserLoginFailedException("用户未激活");
+                }
                 return user.get(0);
             }
         return null;
@@ -37,10 +44,14 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void itriptxCreateUser(ItripUser itripUser) throws Exception {
-        //
+        //生成激活码
         String activationCode= MD5.getMd5(new Date().toLocaleString(),32);
+        //发送邮件
         mailService.sendActivationMail(itripUser.getUserCode(),activationCode);
+        //添加数据库
         ium.insertItripUser(itripUser);
+        //激活码存入缓存
+        redisAPI.set("activate"+itripUser.getUserCode(),30*60,activationCode);
     }
 
     /**
@@ -57,6 +68,23 @@ public class UserServiceImpl implements UserService {
                 return list.get(0);
             }
         return null;
+    }
+    //激活
+    @Override
+    public boolean activate(String userCode,String code) throws Exception {
+        Map<String,Object> mapDate =new HashMap<String,Object>();
+        String value=redisAPI.get("activate"+userCode);
+        if(value.equals(code)){
+            mapDate.put("userCode",userCode);
+           ItripUser itripUser= ium.getByMap(mapDate);
+           if(itripUser !=null){
+               itripUser.setActivated(1);
+               itripUser.setFlatID(itripUser.getId());
+               ium.updateItripUser(itripUser);
+               return true;
+           }
+        }
+        return false;
     }
 
 

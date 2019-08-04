@@ -14,7 +14,7 @@ public interface TokenService {
 	/**
 	 * 会话超时时间
 	 */
-	public final static int SESSION_TIMEOUT=2*60*60;//默认2h
+	public final  static int SESSION_TIMEOUT=2*60*60;//默认2h
 	/**
 	 * 置换保护时间
 	 */
@@ -33,7 +33,7 @@ public interface TokenService {
 	 *  	<BR/>
 	 *  	Android：“前缀ANDROID-USERCODE-USERID-CREATIONDATE-RONDEM[6位]”
 	 */
-	public String generateToken(String agent, ItripUser user);
+	public abstract String  generateToken(String agent, ItripUser user);
 	/**
 	 * 保存用户信息至redis
 	 * @param tokenID

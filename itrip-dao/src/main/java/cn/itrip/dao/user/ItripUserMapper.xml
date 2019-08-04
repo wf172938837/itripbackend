@@ -116,8 +116,50 @@
                 modifiedBy as modifiedBy
 
             from itrip_user
-            where userCode =#{userCode}
-            and userPassword =#{userPassword}
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null and id!=''">
+                and id=#{id}
+            </if>
+            <if test="userCode != null and userCode!=''">
+                and userCode=#{userCode}
+            </if>
+            <if test="userPassword != null and userPassword!=''">
+                and userPassword=#{userPassword}
+            </if>
+            <if test="userType != null and userType!=''">
+                and userType=#{userType}
+            </if>
+            <if test="flatID != null and flatID!=''">
+                and flatID=#{flatID}
+            </if>
+            <if test="userName != null and userName!=''">
+                and userName=#{userName}
+            </if>
+            <if test="weChat != null and weChat!=''">
+                and weChat=#{weChat}
+            </if>
+            <if test="QQ != null and QQ!=''">
+                and QQ=#{QQ}
+            </if>
+            <if test="weibo != null and weibo!=''">
+                and weibo=#{weibo}
+            </if>
+            <if test="baidu != null and baidu!=''">
+                and baidu=#{baidu}
+            </if>
+            <if test="activated != null and activated!=''">
+                and activated=#{activated}
+            </if>
+            <if test="creationDate != null and creationDate!=''">
+                and creationDate=#{creationDate}
+            </if>
+            <if test="createdBy != null and createdBy!=''">
+                and createdBy=#{createdBy}
+            </if>
+            <if test="modifyDate != null and modifyDate!=''">
+                and modifyDate=#{modifyDate}
+            </if>
+        </trim>
     </select>
 
 

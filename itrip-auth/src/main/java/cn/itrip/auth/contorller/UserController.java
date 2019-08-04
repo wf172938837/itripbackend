@@ -47,7 +47,22 @@ public class UserController {
         }
 
     }
+    //激活用户
+    @RequestMapping(value = "activate",method = RequestMethod.POST,produces = "application/json")
+    @ResponseBody
+    public Dto activate(String itripUserCode,String code){
+        try {
+            if(userService.activate(itripUserCode,code)){
+                return DtoUtil.returnSuccess("激活成功");
+            }else{
+                //用Success是指请求成功了
+                return DtoUtil.returnSuccess("激活失败");
+            }        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        return DtoUtil.returnFail("激活出错",ErrorCode.AUTH_UNKNOWN);
+    }
 
     /**			 *
      * 合法E-mail地址：
