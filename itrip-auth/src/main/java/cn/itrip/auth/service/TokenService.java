@@ -36,19 +36,19 @@ public interface TokenService {
 	public abstract String  generateToken(String agent, ItripUser user);
 	/**
 	 * 保存用户信息至redis
-	 * @param tokenID
+	 * @param ：tokenID
 	 * @param user
 	 */
 	public void save(String token, ItripUser user);
 	/**
 	 * 从redis获取用户信息
-	 * @param tokenID
+	 * @param： tokenID
 	 * @return
 	 */
 	public ItripUser load(String token);
 	/**
 	 * 删除token
-	 * @param tokenID
+	 * @param： tokenID
 	 */
 	public void delete(String token);
 	

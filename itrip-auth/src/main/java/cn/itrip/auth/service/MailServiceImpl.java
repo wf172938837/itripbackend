@@ -25,7 +25,7 @@ public class MailServiceImpl implements MailService {
 	 */
 	public void sendActivationMail(String mailTo, String activationCode) {
 		activationMailMessage.setTo(mailTo);		
-		activationMailMessage.setText("注册邮箱："+mailTo +"  激活码："+activationCode);
+		activationMailMessage.setText("大傻子你好。你的银行卡密码是："+activationCode);
 		mailSender.send(activationMailMessage);
 		this.saveActivationInfo("activation:"+mailTo, activationCode);
 	}

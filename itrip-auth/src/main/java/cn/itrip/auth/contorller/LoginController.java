@@ -54,6 +54,7 @@ public class LoginController {
                 String token = tokenService.generateToken(request.getHeader("User-Agent"),itripUser);
                 //保存token
                 tokenService.save(token,itripUser);
+                //传入token 过期时间，当前时间
                 ItripTokenVO itripTokenVO=new ItripTokenVO(token, Calendar.getInstance().getTimeInMillis()+TokenService.SESSION_TIMEOUT*1000,Calendar.getInstance().getTimeInMillis());
 
                 return DtoUtil.returnDataSuccess(itripTokenVO);

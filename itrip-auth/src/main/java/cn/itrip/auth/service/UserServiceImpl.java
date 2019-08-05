@@ -20,6 +20,10 @@ public class UserServiceImpl implements UserService {
     private MailService mailService;
     @Resource
     private RedisAPI redisAPI;
+    @Resource
+    private SmsService smsService;
+
+    private int expire=20;//过期时间（分钟）
     @Override
     /**
      * param: 前台传来的用户名 密码
@@ -36,9 +40,8 @@ public class UserServiceImpl implements UserService {
             }
         return null;
     }
-
     /**
-     *注册
+     *邮箱注册
      * @param: user对象
      * @throws Exception
      */
@@ -72,19 +75,33 @@ public class UserServiceImpl implements UserService {
     //激活
     @Override
     public boolean activate(String userCode,String code) throws Exception {
-        Map<String,Object> mapDate =new HashMap<String,Object>();
-        String value=redisAPI.get("activate"+userCode);
-        if(value.equals(code)){
-            mapDate.put("userCode",userCode);
-           ItripUser itripUser= ium.getByMap(mapDate);
-           if(itripUser !=null){
-               itripUser.setActivated(1);
-               itripUser.setFlatID(itripUser.getId());
-               ium.updateItripUser(itripUser);
-               return true;
-           }
-        }
-        return false;
+            Map<String,Object> mapDate =new HashMap<String,Object>();
+            String value=redisAPI.get("activate:"+userCode);
+            if(value.equals(code)){
+                mapDate.put("userCode",userCode);
+                ItripUser itripUser= ium.getByMap(mapDate);
+                if(itripUser !=null){
+                    itripUser.setActivated(1);
+                    itripUser.setFlatID(itripUser.getId());
+                    ium.updateItripUser(itripUser);
+                    return true;
+                }
+            }
+            return false;
+    }
+
+    @Override
+    public void itriptxCreateUserByPhone(ItripUser user) throws Exception {
+        //创建激活码
+        String code = String.valueOf(MD5.getRandomCode());
+        //发送到那个手机 平台ID 验证时间
+        smsService.send(user.getUserCode(), "1",new String[]{code,String.valueOf(expire)});
+        //设置手机验证key
+        String key="activate:"+user.getUserCode();
+        //储存到redis缓存
+        redisAPI.set(key, expire*60, code);
+
+        ium.insertItripUser(user);
     }
 
 

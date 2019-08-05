@@ -33,6 +33,11 @@
             <artifactId>mail</artifactId>
             <version>1.4</version>
         </dependency>
+        <dependency>
+            <groupId>cn.itrip.ccprestsms</groupId>
+            <artifactId>itrip-ccprestsms</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <build>

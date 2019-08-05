@@ -8,10 +8,7 @@ import cn.itrip.common.DtoUtil;
 import cn.itrip.common.ErrorCode;
 import cn.itrip.common.MD5;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.regex.Pattern;
@@ -86,5 +83,48 @@ public class UserController {
     private boolean validPhone(String phone) {
         String regex="^1[3578]{1}\\d{9}$";
         return Pattern.compile(regex).matcher(phone).find();
+    }
+
+    //手机注册
+    @RequestMapping(value = "doregisterbyphone",method = RequestMethod.POST,produces = "application/json")
+    @ResponseBody
+    public Dto insertUserPhone(@RequestBody ItripUserVO itripUserVO){
+        //验证手机格式是否正确
+        if(!validPhone(itripUserVO.getUserCode())){
+            return DtoUtil.returnFail("手机格式不正确",ErrorCode.AUTH_ILLEGAL_USERCODE);
+        }
+        ItripUser itripUser =new ItripUser();
+        itripUser.setUserCode(itripUserVO.getUserCode());
+        itripUser.setUserPassword(itripUserVO.getUserPassword());
+        itripUser.setUserType(0);
+        itripUser.setUserName(itripUserVO.getUserName());
+
+        try {
+            if(userService.findByName(itripUser.getUserCode())==null){
+                itripUser.setUserPassword(MD5.getMd5(itripUser.getUserPassword(),32));
+                userService.itriptxCreateUserByPhone(itripUser);
+                return DtoUtil.returnSuccess();
+            }else{
+                return DtoUtil.returnFail("用户已存在，注册失败", ErrorCode.AUTH_USER_ALREADY_EXISTS);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DtoUtil.returnFail(e.getMessage(), ErrorCode.AUTH_UNKNOWN);
+        }
+    }
+
+    @RequestMapping(value = "validatephone",method = RequestMethod.POST,produces = "application/json")
+    @ResponseBody
+    public Dto validatePhone(@RequestParam String user,@RequestParam String code){
+        try {
+            if(userService.activate(user,code)){
+                return DtoUtil.returnSuccess("验证成功");
+            }else{
+                return DtoUtil.returnSuccess("验证失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DtoUtil.returnFail("验证失败", ErrorCode.AUTH_ACTIVATE_FAILED);
+        }
     }
 }
