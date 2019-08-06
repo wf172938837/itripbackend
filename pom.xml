@@ -290,7 +290,7 @@
         <repository>
             <id>nexus</id>
             <name>Nexus Repository</name>
-            <url> http://192.168.4.106:8081/nexus/content/groups/public/</url>
+            <url> http://192.168.1.7:8081/nexus/content/groups/public/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -300,7 +300,7 @@
         </repository>
         <repository>
             <id>snapshots</id>
-            <url>http://192.168.4.106:8081/nexus/content/repositories/snapshots</url>
+            <url>http://192.168.1.7:8081/nexus/content/repositories/snapshots</url>
         </repository>
     </repositories>
     <build>
