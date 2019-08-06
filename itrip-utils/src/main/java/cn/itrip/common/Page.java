@@ -12,6 +12,7 @@ import java.util.List;
  *
  */
 public class Page<T> {
+    //当前页
     private Integer curPage;
     /**
      * 总记录数 .
@@ -58,7 +59,13 @@ public class Page<T> {
         this.total = total;//总记录数
         this.pageSize = pagesize;//页码容量
         //总页数=总记录数total/pageSize（+1）
-        this.pageCount = (total + this.pageSize - 1) /this.pageSize;
+        //this.pageCount = (total + this.pageSize - 1) /this.pageSize;
+        if(total%this.pageSize==0){
+            this.pageCount=total/this.pageSize;
+        }else{
+            this.pageCount=total/this.pageSize+1;
+        }
+
         //下标起始位置：(curPage-1)*pageSize
         this.beginPos = (curPage-1)*pageSize;
     }

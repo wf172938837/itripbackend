@@ -28,6 +28,18 @@
             <artifactId>itrip-utils</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <!--solr依赖-->
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
+            <version>5.3.1</version>
+        </dependency>
+        <!--springfox-staticdocs 生成静态文档-->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-staticdocs</artifactId>
+            <version>2.4.0</version>
+        </dependency>
     </dependencies>
 
     <build>
