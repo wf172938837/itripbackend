@@ -34,7 +34,7 @@ public class UserInfoController {
     @Resource
     private ItripOrderLinkUserService ItripOrderLinkUserService;
     //新增联系人
-    @RequestMapping(value = "/",method = RequestMethod.POST,produces = "application/json")
+    @RequestMapping(value = "/adduserlinkuser",method = RequestMethod.POST,produces = "application/json")
     @ResponseBody
     public Dto addItripUserLinkUser(@RequestBody ItripAddUserLinkUserVO itripAddUserLinkUserVO, HttpServletRequest request){
         //获取token
