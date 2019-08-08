@@ -19,10 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/api/userinfo")
@@ -127,9 +124,20 @@ public class UserInfoController {
     public Dto<ItripUserLinkUser> queryUserLinkUser(@RequestBody ItripSearchUserLinkUserVO itripSearchUserLinkUserVO,HttpServletRequest request){
         String token = request.getHeader("token");
         ItripUser itripUser=validationToken.getCurrentUser(token);
-
-
-        return null;
+        if(EmptyUtils.isNotEmpty(itripUser)){
+            Map<String,Object> dateMap =new HashMap<String,Object>();
+            dateMap.put("userId",itripUser.getId());
+            dateMap.put("linkUserName",itripSearchUserLinkUserVO.getLinkUserName());
+            try {
+                List<ItripUserLinkUser> listData=itripUserLinkUserService.findByLinkUserName(dateMap);
+                return DtoUtil.returnSuccess("获取常用联系人信息成功",listData);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return DtoUtil.returnFail("获取常用联系人信息失败","100401");
+            }
+        }else {
+            return DtoUtil.returnFail("token失效，请重新登录","100000");
+        }
     }
 
 

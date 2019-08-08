@@ -29,4 +29,6 @@ public interface ItripUserLinkUserService {
     //查询联系人总数量
     public Integer getItripUserLinkUserCountByMap(Map<String, Object> param)throws Exception;
 
+    public List<ItripUserLinkUser> findByLinkUserName(Map<String,Object> param) throws Exception;
+
 }

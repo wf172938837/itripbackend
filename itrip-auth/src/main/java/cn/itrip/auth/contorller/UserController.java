@@ -44,8 +44,8 @@ public class UserController {
         }
 
     }
-    //激活用户
-    @RequestMapping(value = "activate",method = RequestMethod.POST,produces = "application/json")
+    //邮箱激活用户
+    @RequestMapping(value = "/activate",method = RequestMethod.PUT,produces = "application/json")
     @ResponseBody
     public Dto activate(String itripUserCode,String code){
         try {
@@ -113,7 +113,7 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "validatephone",method = RequestMethod.POST,produces = "application/json")
+    @RequestMapping(value = "/validatephone",method = RequestMethod.PUT,produces = "application/json")
     @ResponseBody
     public Dto validatePhone(@RequestParam String user,@RequestParam String code){
         try {

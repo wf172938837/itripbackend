@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
             List<ItripUser> user=ium.getItripUserListByMap(param);
             if(user !=null && user.size()>0){
-                if(user.get(0).getActivated()!=-1){
+                if(user.get(0).getActivated()!=1){
                     throw new UserLoginFailedException("用户未激活");
                 }
                 return user.get(0);

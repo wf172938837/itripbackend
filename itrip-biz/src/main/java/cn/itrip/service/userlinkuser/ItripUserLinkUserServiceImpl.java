@@ -6,6 +6,7 @@ import cn.itrip.common.EmptyUtils;
 import cn.itrip.common.Page;
 import cn.itrip.dao.userlinkuser.ItripUserLinkUserMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ public class ItripUserLinkUserServiceImpl implements ItripUserLinkUserService{
     }
 
     @Override
+    @Transactional
     public Integer modifyItripUserLinkUser(ItripUserLinkUser itripUserLinkUser) throws Exception {
 
         return itripUserLinkUserMapper.updateItripUserLinkUser(itripUserLinkUser);
@@ -59,6 +61,10 @@ public class ItripUserLinkUserServiceImpl implements ItripUserLinkUserService{
         return page;
     }
 
+    public List<ItripUserLinkUser> findByLinkUserName(Map<String,Object> param) throws Exception {
+
+        return itripUserLinkUserMapper.getItripUserLinkUserListByMap(param);
+    }
     @Override
     public Integer getItripUserLinkUserCountByMap(Map<String, Object> param) throws Exception {
         return itripUserLinkUserMapper.getItripUserLinkUserCountByMap(param);

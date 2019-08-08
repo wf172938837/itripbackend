@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value ="api")
+@RequestMapping(value ="/api")
 public class LoginController {
 
     @Resource(name = "userServiceImpl")
@@ -73,7 +73,7 @@ public class LoginController {
 
         String token=request.getHeader("token");
 
-        if(tokenService.validate(request.getHeader("User-Agent"),token)){
+        if(!tokenService.validate(request.getHeader("User-Agent"),token)){
             return DtoUtil.returnFail("Token无效",ErrorCode.AUTH_TOKEN_INVALID);
         }
         tokenService.delete(token);

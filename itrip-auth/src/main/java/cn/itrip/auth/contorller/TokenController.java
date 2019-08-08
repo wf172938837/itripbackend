@@ -19,7 +19,7 @@ import java.util.Calendar;
 public class TokenController {
     @Resource
     private TokenService tokenService;
-    @RequestMapping(value = "replace",method = RequestMethod.POST,headers = "token",produces = "application/json")
+    @RequestMapping(value = "/retoken",method = RequestMethod.POST,headers = "token",produces = "application/json")
     @ResponseBody
     public Dto replace(HttpServletRequest request){
         try {
