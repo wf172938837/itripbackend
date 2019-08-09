@@ -1,6 +1,5 @@
 package cn.itrip.dao;
 
-import cn.itrip.beans.pojo.ItripHotel;
 import cn.itrip.common.Constants;
 import cn.itrip.common.EmptyUtils;
 import cn.itrip.common.Page;
@@ -34,8 +33,8 @@ public class BaseQuery<T> {
        //获取查询响应的对象
         QueryResponse queryResponse = httpSolrClient.query(solrQuery);
         //查询到内容的放入集合
-        List<ItripHotel> list =queryResponse.getBeans(clazz);
-        return null;
+        List<T> list =queryResponse.getBeans(clazz);
+        return list;
     }
 
     //查询solr中的分页数据

@@ -87,6 +87,7 @@ public class SearchHotelServiceImpl implements SearchHotelService{
         }
         if (EmptyUtils.isNotEmpty(tempQuery.toString())) {
             solrQuery.setQuery(tempQuery.toString());
+            System.out.println(tempQuery.toString());
         }
         Page<ItripHotelVO> page = itripHotelVOBaseQuery.queryPage(solrQuery, ItripHotelVO.class, pageNo, pageSize);
         return page;
@@ -97,7 +98,7 @@ public class SearchHotelServiceImpl implements SearchHotelService{
     public List<ItripHotelVO> searchItripHotelListByHotCity(Integer cityId, Integer pageSize) throws Exception {
         SolrQuery solrQuery=new SolrQuery("*:*");
         if(EmptyUtils.isNotEmpty(cityId)){
-            solrQuery.addFacetField("cityId:"+cityId);
+            solrQuery.addFilterQuery("cityId :"+cityId);
         }else{
             return null;
         }
