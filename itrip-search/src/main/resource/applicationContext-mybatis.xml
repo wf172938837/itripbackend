@@ -8,7 +8,7 @@
                 http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 	<!-- 使用 Swagger Restful API文档时，添加此注解 -->
 	<mvc:default-servlet-handler />
-    <context:component-scan base-package="cn.itrip.service"/>
-    <context:component-scan base-package="cn.itrip.dao"/>
-    <context:annotation-config />
+	<context:component-scan base-package="cn.itrip.service"/>
+	<context:component-scan base-package="cn.itrip.dao"/>
+	<context:annotation-config />
 </beans>

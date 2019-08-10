@@ -1,19 +1,21 @@
 package cn.itrip.dao.areadic;
-
 import cn.itrip.beans.pojo.ItripAreaDic;
-
+import org.apache.ibatis.annotations.Param;
 import java.util.List;
+import java.util.Map;
 
 public interface ItripAreaDicMapper {
-    //查询全部
-    public List<ItripAreaDic> findById(Integer id);
 
-    //添加
-    public Integer inset(ItripAreaDic itripAreaDic);
+    public ItripAreaDic getItripAreaDicById(@Param(value = "id") Long id)throws Exception;
 
-    //修改
-    public Integer updateById(ItripAreaDic itripAreaDic);
+    public List<ItripAreaDic> getItripAreaDicListByMap(Map<String,Object> param)throws Exception;
 
-    //删除
-    public Integer deleteById(ItripAreaDic itripAreaDic);
+    public Integer getItripAreaDicCountByMap(Map<String,Object> param)throws Exception;
+
+    public Integer insertItripAreaDic(ItripAreaDic itripAreaDic)throws Exception;
+
+    public Integer updateItripAreaDic(ItripAreaDic itripAreaDic)throws Exception;
+
+    public Integer deleteItripAreaDicById(@Param(value = "id") Long id)throws Exception;
+
 }

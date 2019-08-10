@@ -9,7 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel(value = "ItripSearchDetailsHotelVO",description = "查询酒店的特色和介绍")
 
-public class ItripSearchDetailsHotelVO {
+public class ItripSearchDetailsHotelVO{
     @ApiModelProperty("[必填] 特色名称")
     private String name;
     @ApiModelProperty("[必填] 特色描述")

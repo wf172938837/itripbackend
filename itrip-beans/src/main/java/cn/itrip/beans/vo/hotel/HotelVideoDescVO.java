@@ -18,6 +18,7 @@ public class HotelVideoDescVO {
 
     private List<String> hotelFeatureList; //酒店特色
 
+
     public String getHotelName() {
         return hotelName;
     }
