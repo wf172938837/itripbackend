@@ -3,11 +3,17 @@ package cn.itrip.controller;
 import cn.itrip.beans.dto.Dto;
 import cn.itrip.beans.pojo.ItripAreaDic;
 import cn.itrip.beans.vo.ItripAreaDicVO;
+import cn.itrip.beans.vo.ItripImageVO;
 import cn.itrip.beans.vo.ItripLabelDicVO;
+import cn.itrip.beans.vo.hotel.HotelVideoDescVO;
+import cn.itrip.beans.vo.hotel.ItripSearchDetailsHotelVO;
+import cn.itrip.beans.vo.hotel.ItripSearchFacilitiesHotelVO;
+import cn.itrip.beans.vo.hotel.ItripSearchPolicyHotelVO;
 import cn.itrip.common.DtoUtil;
 import cn.itrip.common.EmptyUtils;
 import cn.itrip.service.areadic.ItripAreaDicService;
 import cn.itrip.service.hotle.ItripHotelService;
+import cn.itrip.service.image.ItripImageService;
 import cn.itrip.service.labeldic.ItripLabelDicService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
@@ -31,6 +37,8 @@ public class HotelController {
     private ItripHotelService itripHotelService;
     @Resource
     private ItripLabelDicService itripLabelDicService;
+    @Resource
+    private ItripImageService itripImageService;
     /****
      * 查询热门城市的接口
      *
@@ -125,5 +133,115 @@ public class HotelController {
             e.printStackTrace();
         }
         return null;
+    }
+    /***
+     * 根据酒店id查询酒店设施 -add by donghai
+     *
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/queryhotelfacilities/{id}",method = RequestMethod.GET,produces = "application/json")
+    @ResponseBody
+    public Dto<ItripSearchFacilitiesHotelVO> queryHotelFacilities(@PathVariable Long id){
+        ItripSearchFacilitiesHotelVO  vo=null;
+        if(EmptyUtils.isNotEmpty(id)){
+            try {
+                vo=itripHotelService.getFindByFacilities(id);
+                return DtoUtil.returnDataSuccess(vo.getFacilities());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return DtoUtil.returnFail("系统异常,获取失败", "10207");
+            }
+        }else{
+            return DtoUtil.returnFail("酒店id不能为空", "10206");
+        }
+    }
+    /***
+     * 根据酒店id查询酒店政策 -add by donghai
+     *
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/queryhotelpolicy/{id}", produces = "application/json", method = RequestMethod.GET)
+    @ResponseBody
+    public Dto<ItripSearchPolicyHotelVO> queryHotelPolicy(@PathVariable Long id){
+        ItripSearchPolicyHotelVO vo =null;
+        if(EmptyUtils.isNotEmpty(id)){
+            try {
+                vo=itripHotelService.getPolicyFindByHotelId(id);
+                return DtoUtil.returnDataSuccess(vo.getHotelPolicy());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return DtoUtil.returnFail("系统异常,获取失败", "10209");
+            }
+        }else{
+            return DtoUtil.returnFail("酒店id不能为空", "10208");
+        }
+    }
+
+    /***
+     * 根据酒店id查询酒店特色和介绍 -add by donghai
+     *
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/queryhoteldetails/{id}", produces = "application/json", method = RequestMethod.GET)
+    @ResponseBody
+    public Dto<ItripSearchDetailsHotelVO> queryHotelDetails(@PathVariable Long id){
+        List<ItripSearchDetailsHotelVO> dataDetail=null;
+        if(EmptyUtils.isNotEmpty(id)){
+            try {
+                dataDetail=itripHotelService.queryHotelDetails(id);
+                return DtoUtil.returnDataSuccess(dataDetail);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return DtoUtil.returnFail("系统异常,获取失败", "10211");
+            }
+        }else{
+            return DtoUtil.returnFail("酒店id不能为空", "10210");
+        }
+    }
+
+    /**
+     * 根据TargetId 查询酒店图片
+     * @param targetId
+     * @return
+     */
+    @RequestMapping(value = "/getimg/{targetId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Dto<ItripImageVO> getImgByTargetId(@PathVariable String targetId){
+        List<ItripImageVO> listImg=null;
+        if(!targetId.equals("") && targetId!=null){
+            Map<String,Object> params=new HashMap<String,Object>();
+            params.put("type",0);
+            params.put("targetId",targetId);
+            try {
+                listImg=itripImageService.getItripImageListByMap(params);
+                return DtoUtil.returnSuccess("获取酒店图片成功", listImg);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return DtoUtil.returnFail("获取酒店图片失败", "100212");
+            }
+        }else{
+            return DtoUtil.returnFail("酒店id不能为空", "100213");
+        }
+    }
+    //根据酒店id查询酒店特色、商圈、酒店名称
+    @RequestMapping(value = "/getvideodesc/{hotelId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+   public Dto<HotelVideoDescVO> getVideoDescByHotelId(@PathVariable Long hotelId){
+        HotelVideoDescVO hotelVideoDescVO=null;
+        if(EmptyUtils.isNotEmpty(hotelId)){
+            try {
+                hotelVideoDescVO=itripHotelService.getVideoDescByHotelId(hotelId);
+                return DtoUtil.returnSuccess("获取酒店视频文字描述成功", hotelVideoDescVO);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return DtoUtil.returnFail("获取酒店视频文字描述失败", "100214");
+            }
+        } else{
+            return DtoUtil.returnFail("酒店ID不能为空", "100215");
+        }
     }
 }

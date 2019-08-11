@@ -25,7 +25,4 @@ public class ItripImageVO {
         this.imgUrl = imgUrl;
     }
 
-
-
-
 }
