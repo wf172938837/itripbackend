@@ -214,7 +214,7 @@ public class HotelController {
         List<ItripImageVO> listImg=null;
         if(!targetId.equals("") && targetId!=null){
             Map<String,Object> params=new HashMap<String,Object>();
-            params.put("type",0);
+            params.put("type","0");
             params.put("targetId",targetId);
             try {
                 listImg=itripImageService.getItripImageListByMap(params);

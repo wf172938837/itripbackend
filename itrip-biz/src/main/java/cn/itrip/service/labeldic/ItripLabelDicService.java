@@ -7,4 +7,6 @@ import java.util.List;
 public interface ItripLabelDicService {
     
     public List<ItripLabelDicVO> findByParentId(Long id) throws Exception;
+
+    public List<ItripLabelDicVO> findRoomByParentId() throws Exception;
 }

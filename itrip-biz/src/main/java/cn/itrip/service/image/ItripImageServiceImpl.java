@@ -15,4 +15,5 @@ public class ItripImageServiceImpl implements ItripImageService{
     public List<ItripImageVO> getItripImageListByMap(Map<String, Object> param) throws Exception {
         return itripImageMapper.getItripImageListByMap(param);
     }
+
 }

@@ -19,4 +19,9 @@ public class ItripLabelDicServiceImpl implements ItripLabelDicService{
         return itripLabelDicMapper.getItripLabelDicByParentId(id);
     }
 
+    @Override
+    public List<ItripLabelDicVO> findRoomByParentId() throws Exception {
+        return itripLabelDicMapper.getItripLabelDicByParentId(1L);
+    }
+
 }
