@@ -5,22 +5,23 @@ import cn.itrip.beans.vo.ItripImageVO;
 import cn.itrip.beans.vo.ItripLabelDicVO;
 import cn.itrip.beans.vo.hotelroom.ItripHotelRoomVO;
 import cn.itrip.beans.vo.hotelroom.SearchHotelRoomVO;
+import cn.itrip.common.DateUtil;
 import cn.itrip.common.DtoUtil;
 import cn.itrip.common.EmptyUtils;
-import cn.itrip.dao.hotelroom.ItripHotelRoomMapper;
+import cn.itrip.service.hotelroom.ItripHotelRoomService;
 import cn.itrip.service.image.ItripImageService;
 import cn.itrip.service.labeldic.ItripLabelDicService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 @Controller
 @RequestMapping("/api/hotelroom")
-
-
 public class HotelRoomController {
 
     @Resource
@@ -28,7 +29,7 @@ public class HotelRoomController {
     @Resource
     private ItripImageService itripImageService;
     @Resource
-    private ItripHotelRoomMapper itripHotelRoomMapper;
+    private ItripHotelRoomService ItripHotelRoomService;
     /**
      *查询room图片 根据类型type=1是房间
      * @param targetId
@@ -75,6 +76,10 @@ public class HotelRoomController {
             }
         }
         Map<String,Object> params=new HashMap<String,Object>();
+
+        List timesList =new ArrayList();
+        timesList=DateUtil.getBetweenDates(vo.getStartDate(),vo.getEndDate());
+        params.put("timesList",timesList);
         params.put("hotelId",vo.getHotelId());
         params.put("isBook",vo.getIsBook());
         params.put("isHavingBreakfast", vo.getIsHavingBreakfast());
@@ -87,7 +92,7 @@ public class HotelRoomController {
             params.put("payType",vo.getPayType());
         }
         try {
-            itripHotelRoomVOS=itripHotelRoomMapper.getItripHotelRoomListByMap(params);
+            itripHotelRoomVOS=ItripHotelRoomService.getItripHotelRoomListByMap(params);
 
             return DtoUtil.returnSuccess("获取成功", itripHotelRoomVOS);
         } catch (Exception e) {

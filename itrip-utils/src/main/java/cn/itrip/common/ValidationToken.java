@@ -26,7 +26,6 @@ public class ValidationToken {
 			 test token:
 			 key : token:1qaz2wsx
 			 value : {"id":"100078","userCode":"myusercode","userPassword":"78ujsdlkfjoiiewe98r3ejrf","userType":"1","flatID":"10008989"}
-
 			*/
         ItripUser itripUser = null;
         if(null == tokenString || "".equals(tokenString)){
