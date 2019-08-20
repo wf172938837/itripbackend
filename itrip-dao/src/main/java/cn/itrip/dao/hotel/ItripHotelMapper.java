@@ -44,4 +44,6 @@ public interface ItripHotelMapper {
 	public List<ItripLabelDic> getHotelFeatureByHotelId(@Param(value = "id") Long id)throws Exception;
 
 
+
+
 }

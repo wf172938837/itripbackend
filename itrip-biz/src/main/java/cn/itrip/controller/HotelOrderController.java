@@ -1,17 +1,16 @@
 package cn.itrip.controller;
 
 import cn.itrip.beans.dto.Dto;
-import cn.itrip.beans.pojo.ItripUser;
-import cn.itrip.beans.vo.order.ItripListHotelOrderVO;
-import cn.itrip.beans.vo.order.ItripSearchOrderVO;
-import cn.itrip.beans.vo.order.ValidateRoomStoreVO;
-import cn.itrip.common.DtoUtil;
-import cn.itrip.common.EmptyUtils;
-import cn.itrip.common.Page;
-import cn.itrip.common.ValidationToken;
+import cn.itrip.beans.pojo.*;
+import cn.itrip.beans.vo.order.*;
+import cn.itrip.beans.vo.store.StoreVO;
+import cn.itrip.common.*;
 import cn.itrip.service.hotelorder.ItripHotelOrderService;
+import cn.itrip.service.hotelroom.ItripHotelRoomService;
 import cn.itrip.service.hoteltempstore.ItripHotelTempStoreService;
+import cn.itrip.service.hotle.ItripHotelService;
 import cn.itrip.service.orderlinkuser.ItripOrderLinkUserService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -30,9 +30,12 @@ public class HotelOrderController {
     private ItripOrderLinkUserService itripOrderLinkUserService;
     @Resource
     private ItripHotelOrderService itripHotelOrderService;
+    @Resource
+    private ItripHotelRoomService itripHotelRoomService;
 
     private ValidationToken validationToken;
-
+    @Resource
+    private ItripHotelService itripHotelService;
     @Resource
     private ItripHotelTempStoreService itripHotelTempStoreService;
     /**
@@ -47,7 +50,7 @@ public class HotelOrderController {
         //判断Token
         String token =request.getHeader("token");
         ItripUser itripUser=new ValidationToken().getCurrentUser(token);
-        if(itripUser!=null){
+        if(EmptyUtils.isNotEmpty(itripUser)){
             if(EmptyUtils.isEmpty(vo.getOrderType())){
                 return DtoUtil.returnFail("请传递参数：orderType", "100501");
             }
@@ -111,6 +114,91 @@ public class HotelOrderController {
                 return DtoUtil.returnFail("系统异常", "100517");
             }
         }
+    }
+    //生成订单前获取预定信息
+    @RequestMapping(value = "/getpreorderinfo", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public Dto<RoomStoreVO> getPreOrderInfo(HttpServletRequest request,@RequestBody ValidateRoomStoreVO validateRoomStoreVO){
+        String token =request.getHeader("token");
+        ItripUser itripUser=validationToken.getCurrentUser(token);
+        RoomStoreVO roomStoreVO=null;
+        ItripHotel itripHotel=null;
+        ItripHotelRoom itripHotelRoom=null;
+        if(EmptyUtils.isEmpty(itripUser)){
+            return DtoUtil.returnFail("token失效，请重登录", "100000");
+        }
+        if (EmptyUtils.isEmpty(validateRoomStoreVO.getHotelId())) {
+            return DtoUtil.returnFail("hotelId不能为空", "100510");
+        } else if (EmptyUtils.isEmpty(validateRoomStoreVO.getRoomId())) {
+            return DtoUtil.returnFail("roomId不能为空", "100511");
+        } else {
+            roomStoreVO=new RoomStoreVO();
+            try {
+                itripHotel=itripHotelService.getByHotelId(validateRoomStoreVO.getHotelId());
+                itripHotelRoom=itripHotelRoomService.getItripHotelRoomById(validateRoomStoreVO.getRoomId());
+                Map<String,Object> param=new HashMap<>();
+                param.put("startTime", validateRoomStoreVO.getCheckInDate());
+                param.put("endTime", validateRoomStoreVO.getCheckOutDate());
+                param.put("roomId", validateRoomStoreVO.getRoomId());
+                param.put("hotelId", validateRoomStoreVO.getHotelId());
+                roomStoreVO.setCheckInDate(validateRoomStoreVO.getCheckInDate());
+                roomStoreVO.setCheckOutDate(validateRoomStoreVO.getCheckOutDate());
+                roomStoreVO.setHotelName(itripHotel.getHotelName());
+                roomStoreVO.setRoomId(itripHotelRoom.getId());
+                roomStoreVO.setPrice(itripHotelRoom.getRoomPrice());
+                roomStoreVO.setHotelId(validateRoomStoreVO.getHotelId());
+                roomStoreVO.setCount(1);
+                List<StoreVO> storeVOList = itripHotelTempStoreService.queryRoomStore(param);
+                if (EmptyUtils.isNotEmpty(storeVOList)) {
+                    roomStoreVO.setStore(storeVOList.get(0).getStore());
+                    return DtoUtil.returnSuccess("获取成功", roomStoreVO);
+                } else {
+                    return DtoUtil.returnFail("暂时无房", "100512");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return DtoUtil.returnFail("系统异常", "100513");
+            }
+        }
+    }
+    //生成订单
+    @RequestMapping(value = "/addhotelorder", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public Dto addHotelOrder(HttpServletRequest request,@RequestBody ItripAddHotelOrderVO itripAddHotelOrderVO){
+        String token =request.getHeader("token");
+        ItripUser itripUser=validationToken.getCurrentUser(token);
+        Map<String, Object> validateStoreMap = new HashMap<String, Object>();
+
+        validateStoreMap.put("startTime", itripAddHotelOrderVO.getCheckInDate());
+        validateStoreMap.put("endTime", itripAddHotelOrderVO.getCheckOutDate());
+        validateStoreMap.put("hotelId", itripAddHotelOrderVO.getHotelId());
+        validateStoreMap.put("roomId", itripAddHotelOrderVO.getRoomId());
+        validateStoreMap.put("count", itripAddHotelOrderVO.getCount());
+        List<ItripUserLinkUser> linkUsers=itripAddHotelOrderVO.getLinkUser();
+        if(EmptyUtils.isEmpty(itripUser)){
+            return DtoUtil.returnFail("token失效，请重登录", "100000");
+        }
+        try {
+            boolean flag=itripHotelTempStoreService.validateRoomStore(validateStoreMap);
+            if(flag && EmptyUtils.isNotEmpty(itripAddHotelOrderVO)){
+                //算出预定天数
+                Integer days= DateUtil.getBetweenDates(itripAddHotelOrderVO.getCheckInDate(),
+                        itripAddHotelOrderVO.getCheckOutDate()).size()-1;
+
+                if(days<=0){
+                    return DtoUtil.returnFail("退房日期必须大于入住日期", "100505");
+                }
+                ItripHotelOrder itripHotelOrder=new ItripHotelOrder();
+                //测试一下
+                BeanUtils.copyProperties(itripHotelOrder,itripAddHotelOrderVO);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DtoUtil.returnFail("生成订单失败", "100505");
+        }
+        //xxxxxxx
+        return null;
     }
 
 }

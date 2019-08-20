@@ -47,7 +47,6 @@ public class LoginController {
                 e.printStackTrace();
                 return DtoUtil.returnFail(e.getMessage(), ErrorCode.AUTH_UNKNOWN);
             }
-
             //判断itripUser对象不为空
             if(EmptyUtils.isNotEmpty(itripUser)){
                 //创建token

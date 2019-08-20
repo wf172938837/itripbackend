@@ -13,6 +13,7 @@ public class StoreVO {
     private Date date;
 
     private Integer store;
+    
 
     public Long getRoomId() {
         return roomId;
