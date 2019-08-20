@@ -9,4 +9,6 @@ public interface ItripHotelOrderService {
 
     public Page<ItripListHotelOrderVO>  queryOrderPageByMap(Map<String,Object> param, Integer pageNO, Integer pageSize) throws Exception;
 
+
+
 }
