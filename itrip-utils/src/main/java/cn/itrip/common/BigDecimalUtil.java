@@ -28,10 +28,14 @@ public class BigDecimalUtil {
         BigDecimal num1 = new BigDecimal(String.valueOf(numOne)).setScale(scale,roundingMode);
         BigDecimal num2 = new BigDecimal(String.valueOf(numTwo)).setScale(scale,roundingMode);
         switch (bigDecimalOpration){
-            case add: return num1.add(num2).setScale(scale,roundingMode);//加法
-            case subtract: return num1.subtract(num2).setScale(scale,roundingMode);//减法
-            case multiply: return num1.multiply(num2).setScale(scale,roundingMode);//乘法
-            case divide: return num1.divide(num2, scale, roundingMode);//除法
+            case add:
+                return num1.add(num2).setScale(scale,roundingMode);//加法
+            case subtract:
+                return num1.subtract(num2).setScale(scale,roundingMode);//减法
+            case multiply:
+                return num1.multiply(num2).setScale(scale,roundingMode);//乘法
+            case divide:
+                return num1.divide(num2, scale, roundingMode);//除法
         }
         return null;
     }

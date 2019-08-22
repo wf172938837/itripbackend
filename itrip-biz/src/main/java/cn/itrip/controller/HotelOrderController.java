@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Controller
 @RequestMapping("/api/hotelorder")
@@ -38,6 +38,10 @@ public class HotelOrderController {
     private ItripHotelService itripHotelService;
     @Resource
     private ItripHotelTempStoreService itripHotelTempStoreService;
+
+    private SystemConfig systemConf;
+
+    private BigDecimalUtil bigDecimalUtil;
     /**
      * 根据个人订单列表，分页显示
      * @param vo
@@ -191,14 +195,61 @@ public class HotelOrderController {
                 ItripHotelOrder itripHotelOrder=new ItripHotelOrder();
                 //测试一下
                 BeanUtils.copyProperties(itripHotelOrder,itripAddHotelOrderVO);
-            }
+                itripHotelOrder.setUserId(itripUser.getId());
+                itripHotelOrder.setCreatedBy(itripAddHotelOrderVO.getId());
+                StringBuffer sb =new StringBuffer();
+                for(int i=0;i<linkUsers.size();i++){
+                    if(i!=linkUsers.size()-1){
+                        sb.append(linkUsers.get(i).getLinkUserName()+",");
+                    }else{
+                        sb.append(linkUsers.get(i).getLinkUserName());
+                    }
+                }
+                itripHotelOrder.setLinkUserName(sb.toString());
+                itripHotelOrder.setBookingDays(days);
+                if(token.startsWith("token:PC")){
+                    itripHotelOrder.setBookType(0);
+                }else if(token.startsWith("token:MOBILE")){
+                    itripHotelOrder.setBookType(1);
+                }else{
+                    itripHotelOrder.setBookType(2);
+                }
+                //订单还未付款的时候设置为 ： 未支付状态
+                itripHotelOrder.setOrderStatus(0);
 
+                //生成订单号格式：（商品IDs+毫秒数+1000000的随机数）
+                StringBuffer timeCode=new StringBuffer();
+                timeCode.append(itripAddHotelOrderVO.getHotelId());
+                timeCode.append(itripAddHotelOrderVO.getRoomId());
+                timeCode.append(System.currentTimeMillis());
+                //两种随机数
+               // timeCode.append(Math.random()*1000000);
+                timeCode.append(new Random().nextInt(1000000));
+                //生成6位的MD5
+                String md5str=MD5.getMd5(timeCode.toString(),6);
+                StringBuffer orderNO=new StringBuffer();
+                orderNO.append(systemConf.getMachineCode());
+                orderNO.append(DateUtil.format(new Date(),"yyyyMMddHHmmss"));
+                orderNO.append(md5str);
+                itripHotelOrder.setOrderNo(orderNO.toString());
+
+                //计算价格
+                itripHotelOrder.setPayAmount(itripHotelOrderService.getOrderPayAmount(days*itripAddHotelOrderVO.getCount(),itripAddHotelOrderVO.getRoomId()));
+
+                ConcurrentMap<Object,Object> map =new ConcurrentHashMap<>();
+                map.put(itripHotelOrder,linkUsers);
+                return DtoUtil.returnSuccess("生成订单成功", map);
+            }else if(flag && null==itripAddHotelOrderVO){
+                return DtoUtil.returnFail("不能提交空，请填写订单信息", "100506");
+            }else{
+                return DtoUtil.returnFail("库存不足", "100507");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return DtoUtil.returnFail("生成订单失败", "100505");
         }
-        //xxxxxxx
-        return null;
     }
+
+
 
 }
