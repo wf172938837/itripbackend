@@ -1,18 +1,17 @@
 package cn.itrip.service.hoteltempstore;
 
-import cn.itrip.beans.vo.store.StoreVO;
-import cn.itrip.dao.hoteltempstore.ItripHotelTempStoreMapper;
 import cn.itrip.beans.pojo.ItripHotelTempStore;
+import cn.itrip.beans.vo.store.StoreVO;
+import cn.itrip.common.Constants;
 import cn.itrip.common.EmptyUtils;
 import cn.itrip.common.Page;
+import cn.itrip.dao.hoteltempstore.ItripHotelTempStoreMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import cn.itrip.common.Constants;
 
 @Service
 public class ItripHotelTempStoreServiceImpl implements ItripHotelTempStoreService {
@@ -106,7 +105,6 @@ public class ItripHotelTempStoreServiceImpl implements ItripHotelTempStoreServic
      * @throws Exception
      */
     public boolean updateRoomStore(Map<String, Object> param) throws Exception {
-        Integer flag = itripHotelTempStoreMapper.updateRoomStore(param);
-        return flag == 0 ? false : true;
+        return itripHotelTempStoreMapper.updateRoomStore(param) == 0 ? false : true;
     }
 }

@@ -56,4 +56,5 @@ public interface ItripHotelOrderMapper {
 	 */
 	public Integer flushSuccessOrderStatus()throws Exception;
 
+
 }

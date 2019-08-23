@@ -193,7 +193,8 @@
 
 
     <update id="updateRoomStore" parameterType="java.util.Map">
-        update itrip_hotel_temp_store set  store=store-#{count}
+        update itrip_hotel_temp_store
+        set  store=store-#{count}
         WHERE
             roomId=#{roomId}
         AND
