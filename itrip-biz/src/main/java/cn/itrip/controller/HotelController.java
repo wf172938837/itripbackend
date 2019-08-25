@@ -2,6 +2,7 @@ package cn.itrip.controller;
 
 import cn.itrip.beans.dto.Dto;
 import cn.itrip.beans.pojo.ItripAreaDic;
+import cn.itrip.beans.pojo.ItripLabelDic;
 import cn.itrip.beans.vo.ItripAreaDicVO;
 import cn.itrip.beans.vo.ItripImageVO;
 import cn.itrip.beans.vo.ItripLabelDicVO;
@@ -120,19 +121,27 @@ public class HotelController {
      */
     @RequestMapping(value = "/queryhotelfeature", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody
-    public Dto<ItripLabelDicVO> queryHotelFeature(){
-        List<ItripLabelDicVO> itripLabelDicVOS=null;
-        Long parentId=16L;
+    public Dto<ItripLabelDicVO> queryHotelFeature() {
+        List<ItripLabelDic> itripLabelDics = null;
+        List<ItripLabelDicVO> itripAreaDicVOs = null;
         try {
-            itripLabelDicVOS=itripLabelDicService.findByParentId(parentId);
-            if(EmptyUtils.isNotEmpty(itripLabelDicVOS)){
-                return DtoUtil.returnDataSuccess(itripLabelDicVOS);
+            Map<String,Object> param = new HashMap();
+            param.put("parentId",16);
+            itripLabelDics = itripLabelDicService.getItripLabelDicListByMap(param);
+            if (EmptyUtils.isNotEmpty(itripLabelDics)) {
+                itripAreaDicVOs = new ArrayList();
+                for (ItripLabelDic dic : itripLabelDics) {
+                    ItripLabelDicVO vo = new ItripLabelDicVO();
+                    BeanUtils.copyProperties(vo, dic);
+                    itripAreaDicVOs.add(vo);
+                }
+                return DtoUtil.returnDataSuccess(itripAreaDicVOs);
             }
         } catch (Exception e) {
-            DtoUtil.returnFail("系统异常", "10205");
             e.printStackTrace();
+            return DtoUtil.returnFail("系统异常", "10205");
         }
-        return null;
+       return null;
     }
     /***
      * 根据酒店id查询酒店设施 -add by donghai
@@ -187,19 +196,18 @@ public class HotelController {
      */
     @RequestMapping(value = "/queryhoteldetails/{id}", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody
-    public Dto<ItripSearchDetailsHotelVO> queryHotelDetails(@PathVariable Long id){
-        List<ItripSearchDetailsHotelVO> dataDetail=null;
-        if(EmptyUtils.isNotEmpty(id)){
-            try {
-                dataDetail=itripHotelService.queryHotelDetails(id);
-                return DtoUtil.returnDataSuccess(dataDetail);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return DtoUtil.returnFail("系统异常,获取失败", "10211");
+    public Dto<ItripSearchFacilitiesHotelVO> queryHotelDetails(@PathVariable Long id) {
+        List<ItripSearchDetailsHotelVO> itripSearchDetailsHotelVOList = null;
+        try {
+            if (EmptyUtils.isNotEmpty(id)) {
+                itripSearchDetailsHotelVOList = itripHotelService.queryHotelDetails(id);
+                return DtoUtil.returnDataSuccess(itripSearchDetailsHotelVOList);
+            } else {
+                return DtoUtil.returnFail("酒店id不能为空", "10210");
             }
-        }else{
-            return DtoUtil.returnFail("酒店id不能为空", "10210");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DtoUtil.returnFail("系统异常,获取失败", "10211");
         }
     }
 

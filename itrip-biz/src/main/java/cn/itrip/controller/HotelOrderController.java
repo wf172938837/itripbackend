@@ -10,8 +10,11 @@ import cn.itrip.service.hotelroom.ItripHotelRoomService;
 import cn.itrip.service.hoteltempstore.ItripHotelTempStoreService;
 import cn.itrip.service.hotle.ItripHotelService;
 import cn.itrip.service.orderlinkuser.ItripOrderLinkUserService;
+import cn.itrip.service.tradeends.ItripTradeEndsService;
 import com.alibaba.fastjson.JSONArray;
+import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +27,7 @@ import java.util.concurrent.ConcurrentMap;
 @Controller
 @RequestMapping("/api/hotelorder")
 public class HotelOrderController {
+    private Logger logger = Logger.getLogger(HotelOrderController.class);
     @Resource
     private ItripHotelOrderService itripHotelOrderService;
     @Resource
@@ -38,8 +42,10 @@ public class HotelOrderController {
     private SystemConfig systemConf;
     @Resource
     private ItripOrderLinkUserService itripOrderLinkUserService;
+    @Resource
+    private ItripTradeEndsService itripTradeEndsService;
     /**
-     * 根据个人订单列表，分页显示
+     * 根据个人订单列表，分页显示1
      * @param vo
      * @param request
      * @return
@@ -79,7 +85,7 @@ public class HotelOrderController {
     }
 
     /**
-     * 根据修改订房日期验证是否有房
+     * 根据修改订房日期验证是否有房4
      * @param validateRoomStoreVO
      * @param request
      * @return
@@ -115,7 +121,7 @@ public class HotelOrderController {
             }
         }
     }
-    //生成订单前获取预定信息
+    //生成订单前获取预定信息3
     @RequestMapping(value = "/getpreorderinfo", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public Dto<RoomStoreVO> getPreOrderInfo(HttpServletRequest request,@RequestBody ValidateRoomStoreVO validateRoomStoreVO){
@@ -161,7 +167,7 @@ public class HotelOrderController {
             }
         }
     }
-    //生成订单
+    //生成订单2
     @RequestMapping(value = "/addhotelorder", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public Dto addHotelOrder(HttpServletRequest request,@RequestBody ItripAddHotelOrderVO itripAddHotelOrderVO){
@@ -232,8 +238,7 @@ public class HotelOrderController {
                 //计算价格
                 itripHotelOrder.setPayAmount(itripHotelOrderService.getOrderPayAmount(days*itripAddHotelOrderVO.getCount(),itripAddHotelOrderVO.getRoomId()));
 
-                ConcurrentMap<Object,Object> map =new ConcurrentHashMap<>();
-                map.put(itripHotelOrder,linkUsers);
+                Map<String,String> map =itripHotelOrderService.itriptxAddItripHotelOrder(itripHotelOrder,linkUsers);
                 return DtoUtil.returnSuccess("生成订单成功", map);
             }else if(flag && null==itripAddHotelOrderVO){
                 return DtoUtil.returnFail("不能提交空，请填写订单信息", "100506");
@@ -246,7 +251,67 @@ public class HotelOrderController {
         }
     }
 
-    //修改订单的支付方式和状态
+    //支付成功后查询订单信息5
+    @RequestMapping(value = "/querysuccessorderinfo/{id}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Dto querySuccessOrderInfo(@PathVariable Long id,HttpServletRequest request){
+        String token =request.getHeader("token");
+        ItripUser itripUser=validationToken.getCurrentUser(token);
+        if(EmptyUtils.isEmpty(itripUser)){
+            return DtoUtil.returnFail("token失效，请重登录", "100000");
+        }
+        if (EmptyUtils.isEmpty(id)) {
+            return DtoUtil.returnFail("id不能为空", "100519");
+        }
+        try {
+            ItripHotelOrder itripHotelOrder=itripHotelOrderService.getItripHotelOrderById(id);
+            if(EmptyUtils.isEmpty(itripHotelOrder)){
+                return DtoUtil.returnFail("没有查询到相应订单", "100519");
+            }
+            ItripHotelRoom itripHotelRoom=itripHotelRoomService.getItripHotelRoomById(itripHotelOrder.getRoomId());
+            ConcurrentHashMap<String,Object> data=new ConcurrentHashMap<>();
+
+            data.put("id",itripHotelOrder.getId());
+            data.put("orderNo",itripHotelOrder.getOrderNo());
+            data.put("payType",itripHotelOrder.getPayType());
+            data.put("payAmount",itripHotelOrder.getPayAmount());
+            data.put("hotelName",itripHotelOrder.getHotelName());
+            data.put("roomTitle",itripHotelRoom.getRoomTitle());
+            return DtoUtil.returnSuccess("获取数据成功", data);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DtoUtil.returnFail("获取数据失败", "100520");
+        }
+    }
+
+    /***
+     * 10分钟执行一次 刷新订单的状态 不对外公布6
+     */
+    @Scheduled(cron = "*0 0/10 * * * ?")
+    public void flushCancelOrderStatus() {
+        try {
+            boolean flag = itripHotelOrderService.flushOrderStatus(1);
+            logger.info(flag ? "刷取订单成功" : "刷单失败");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /***
+     * 2小时执行一次 刷新订单的状态 不对外公布7
+     */
+    @Scheduled(cron = "0 0 0/2 * * ?")
+    public void flushOrderStatus() {
+        try {
+            logger.info("刷单程序开始执行.......");
+            boolean flag = itripHotelOrderService.flushOrderStatus(2);
+            logger.info("刷单程序执行完毕.......");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //修改订单的支付方式和状态8
     @RequestMapping(value = "/updateorderstatusandpaytype", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public Dto updateOrderStatusAndPayType(@RequestBody ItripModifyHotelOrderVO itripModifyHotelOrderVO,HttpServletRequest request){
@@ -280,7 +345,7 @@ public class HotelOrderController {
 
     }
 
-    //根据订单ID查看个人订单详情
+    //根据订单ID查看个人订单详情10
     @RequestMapping(value = "/getpersonalorderinfo/{orderId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Dto<ItripPersonalHotelOrderVO> getPersonalOrderInfo(@PathVariable String orderId,HttpServletRequest request){
@@ -345,7 +410,7 @@ public class HotelOrderController {
             return DtoUtil.returnFail("token失效，请重登录", "100000");
         }
     }
-    //根据订单ID查看个人订单详情-房型相关信息
+    //根据订单ID查看个人订单详情-房型相关信息11
 
     @RequestMapping(value = "/getpersonalorderroominfo/{orderId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
@@ -373,7 +438,7 @@ public class HotelOrderController {
         }
     }
 
-    //根据订单ID获取订单信息
+    //根据订单ID获取订单信息12
     @RequestMapping(value = "/queryOrderById/{orderId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Dto queryOrderById(@PathVariable String orderId,HttpServletRequest request){
@@ -410,6 +475,33 @@ public class HotelOrderController {
     @RequestMapping(value = "/scanTradeEnd", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Dto scanTradeEnd(){
-        return  null;
+        ConcurrentHashMap map=new ConcurrentHashMap();
+        map.put("flag",1);
+        map.put("oldFlag",0);
+        try {
+            itripTradeEndsService.itriptxModifyItripTradeEnds(map);
+            //查询出未处理的订单编号
+            List<ItripTradeEnds> tradeEndses = itripTradeEndsService.getItripTradeEndsByMap(map);
+            for(ItripTradeEnds temp:tradeEndses){
+                Map<String, Object> orderParam = new HashMap<String, Object>();
+                orderParam.put("orderNo",temp.getOrderNo());
+                List<ItripHotelOrder> list =itripHotelOrderService.getItripHotelOrderListByMap(orderParam);
+                for(ItripHotelOrder orderTemp:list){
+                    Map<String, Object> storeMap = new HashMap<String, Object>();
+                    storeMap.put("startTime",orderTemp.getCheckInDate());
+                    storeMap.put("endTime",orderTemp.getCheckOutDate());
+                    storeMap.put("count",orderTemp.getCount());
+                    storeMap.put("roomId",orderTemp.getRoomId());
+                    itripHotelTempStoreService.updateRoomStore(storeMap);
+                }
+            }
+            map.put("flag",2);
+            map.put("oldFlag",1);
+            itripTradeEndsService.itriptxModifyItripTradeEnds(map);
+            return DtoUtil.returnSuccess();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DtoUtil.returnFail("系统异常", "100536");
+        }
     }
 }

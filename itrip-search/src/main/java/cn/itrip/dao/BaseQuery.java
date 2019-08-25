@@ -15,7 +15,7 @@ import java.util.List;
 
 //连接solr
 public class BaseQuery<T> {
-   //public static final String URL="192.168.4.142/solr/hotel";
+
     private HttpSolrClient httpSolrClient;
 
     //该类启动后，创建HttpSolrClient对象，填入URL地址，设置解析格式默认为XML，设置最大连接时间

@@ -66,19 +66,24 @@ public class ItripHotelServiceImpl implements ItripHotelService{
         List<ItripLabelDic> dataLabel=new ArrayList<ItripLabelDic>();
         List<ItripSearchDetailsHotelVO> dataDetail=new ArrayList<ItripSearchDetailsHotelVO>();
         ItripSearchDetailsHotelVO vo1=new ItripSearchDetailsHotelVO();
-        vo1.setName("酒店特色");
-        vo1.setDescription(itripHotelMapper.getItripHotelById(id).getFacilities());
+        vo1.setName("酒店介绍");
+        vo1.setDescription(itripHotelMapper.getItripHotelById(id).getDetails());
         dataDetail.add(vo1);
         dataLabel=itripHotelMapper.getHotelFeatureByHotelId(id);
         if(dataLabel.size()>0 && dataLabel!=null){
-            ItripSearchDetailsHotelVO vo2=new ItripSearchDetailsHotelVO();
+
             for(ItripLabelDic temp:dataLabel){
+                ItripSearchDetailsHotelVO vo2=new ItripSearchDetailsHotelVO();
                 vo2.setName(temp.getName());
                 vo2.setDescription(temp.getDescription());
+                dataDetail.add(vo2);
             }
-            dataDetail.add(vo2);
             return dataDetail;
         }
         return null;
+    }
+
+    public ItripHotel getItripHotelById(Long id)throws Exception{
+        return itripHotelMapper.getItripHotelById(id);
     }
 }

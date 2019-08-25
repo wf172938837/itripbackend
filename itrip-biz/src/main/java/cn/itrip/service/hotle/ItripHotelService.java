@@ -49,4 +49,5 @@ public interface ItripHotelService {
      */
     public List<ItripSearchDetailsHotelVO> queryHotelDetails(Long id) throws Exception;
 
+    public ItripHotel getItripHotelById(Long id)throws Exception;
 }
